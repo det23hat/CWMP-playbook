@@ -1,7 +1,6 @@
 ---
 - name: ping hosts
   hosts: '{{host}}'
-  become: true
   tasks:
     - name: Example from an Ansible Playbook
       ansible.builtin.ping:
