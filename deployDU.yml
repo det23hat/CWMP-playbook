@@ -11,3 +11,4 @@
         interactive: yes
         tty: yes
         ports: '{{ container_port }}'
+        volumes: '{{ container_volume }}'
