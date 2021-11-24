@@ -1,0 +1,20 @@
+---
+- name: test module
+  hosts: '{{ host }}'
+  become: true
+  tasks:  
+    - name: running container
+      community.docker.docker_container:
+        name: '{{ container_name }}'
+        image: '{{ container_image }}'
+        detach: yes
+        auto_remove: no
+        init: no
+        interactive: no
+        memory: "0"
+        paused: no
+        privileged: no
+        read_only: no
+        tty: no
+        port: '{{ container_port }}'
+        volumes: '{{ container_volume }}'
