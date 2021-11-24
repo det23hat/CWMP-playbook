@@ -16,5 +16,5 @@
         privileged: no
         read_only: no
         tty: no
-        port: '{{ container_port }}'
+        ports: '{{ container_port }}'
         volumes: '{{ container_volume }}'
