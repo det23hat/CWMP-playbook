@@ -15,3 +15,5 @@
         interactive: no
         privileged: no
         tty: no
+        volumes: 
+          - /home/vagrant/parameter:/parameter
