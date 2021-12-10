@@ -1,5 +1,6 @@
 - name: 更新DU
   hosts: '{{host}}'
+  become: true
   vars:
     old_ver_containers_info: []
     du_latest_images: []

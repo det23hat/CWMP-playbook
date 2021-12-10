@@ -1,5 +1,6 @@
 - name: 更新DU
   hosts: '{{host}}'
+  become: true
   tasks:
     - name: 移除版本系統 container
       community.docker.docker_container:
