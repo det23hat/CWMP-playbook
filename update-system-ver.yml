@@ -1,0 +1,16 @@
+- name: 更新DU
+  hosts: '{{host}}'
+  tasks:
+    - name: 移除版本系統 container
+      community.docker.docker_container:
+        name: inform-2
+        state: absent
+    
+    - name: 運行新版本系統 container
+      community.docker.docker_container:
+        name: inform-2
+        image: '{{ inform_periodic_latest_image }}'
+        detach: yes
+        interactive: no
+        privileged: no
+        tty: no

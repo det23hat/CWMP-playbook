@@ -1,0 +1,20 @@
+---
+- name: 將CPE連線資訊加入inventory
+  hosts: localhost
+  become: true
+  vars:
+    - cpe_group: "[cpe]"
+  tasks:
+    - name: 檢查該CPE是否已加入
+      ansible.builtin.command: grep {{ host }} /etc/ansible/hosts
+      register: exit_result
+      ignore_errors: yes
+
+    - name: 加入CPE至inventory中
+      blockinfile:
+        path: /etc/ansible/hosts
+        insertafter: "{{ cpe_group }}"
+        marker: "#addhost {{host}}"
+        block: |
+          {{host}} ansible_ssh_host={{ ansible_ip }} ansible_port=22 ansible_user=vagrant
+      when: exit_result.stdout == ""

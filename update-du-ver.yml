@@ -1,0 +1,26 @@
+  - name: 移除舊版本 container
+    community.docker.docker_container:
+      name: '{{ new_ver_container_item.container_name }}'
+      state: absent
+    
+  - name: 運行新版本 container
+    community.docker.docker_container:
+      name: '{{ new_ver_container_item.container_name }}'
+      image: '{{ new_ver_container_item.image_ver }}'
+      detach: yes
+      interactive: no
+      privileged: no
+      tty: no
+      ports: '{{ new_ver_container_item.ports }}'
+    when: new_ver_container_item.ports != []
+  
+  - name: 運行新版本 container
+    community.docker.docker_container:
+      name: '{{ new_ver_container_item.container_name }}'
+      image: '{{ new_ver_container_item.image_ver }}'
+      detach: yes
+      interactive: no
+      privileged: no
+      tty: no
+    when: new_ver_container_item.ports == []
+    

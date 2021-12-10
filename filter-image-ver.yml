@@ -1,0 +1,17 @@
+- name: 將版本不符者的container資訊加入old_ver_containers_info list
+  set_fact:
+    old_ver_containers_info: "{{ old_ver_containers_info + [{'container_name':item.Names[0],'image_ver':new_ver_image_item.image_ver,'Ports':item.Ports}] }}"
+  loop: "{{ du_info | json_query('containers[*]') }}" 
+  when: 
+    - new_ver_image_item.container_name == item.Names[0] 
+    - new_ver_image_item.image_ver != item.Image
+
+#- name: 
+#  set_fact:
+#    old_ver_container: "{{ old_ver_container + [{'container_name':item.Names[0],'image_ver':outer_item.image_ver}] }}"
+#  loop: "{{ du_info | json_query('containers[*]') }}"
+#  when: 
+#    - outer_item.container_name == item.Names[0] 
+#    - outer_item.image_ver != item.Image
+
+  

@@ -1,0 +1,17 @@
+- name: 更改舊版本container該port陣列之格式
+  set_fact:
+    port_list: "{{ port_list + [item.PublicPort|string +':'+ item.PrivatePort|string]}}"
+  loop: "{{ old_ver_containers_item.Ports }}"
+
+- name: print port list
+  debug:
+    msg: "{{ item }}"
+  loop: "{{ port_list }}"
+
+- name: 將新格式之port陣列加入到新版本container info
+  set_fact:
+    new_ver_containers_info: "{{ new_ver_containers_info + [{'container_name':old_ver_containers_item.container_name,'image_ver':old_ver_containers_item.image_ver,'ports':port_list}] }}"
+
+- name: 重置port list
+  set_fact:
+    port_list: []
