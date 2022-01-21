@@ -3,5 +3,5 @@
   tasks:
     - name: 更新playbook
       ansible.builtin.copy:
-        src: ./CPE-playbook
+        src: '../CPE-playbook'
         dest: /home/vagrant/manage_inform/ansible_playbook
