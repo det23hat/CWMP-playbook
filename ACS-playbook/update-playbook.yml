@@ -1,6 +1,5 @@
 - name: 更新playbook
   hosts: localhost
-  become: true
   tasks:
     - name: 更新playbook
       ansible.builtin.copy:
