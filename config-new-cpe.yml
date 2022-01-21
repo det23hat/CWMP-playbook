@@ -2,29 +2,15 @@
 - name: 設置ssh key於CPE
   hosts: "{{ host }}"
   become: true
+  vars:
+    - new_cpe_parameter: ""
   tasks:
     - name: 新增ssh key 到cpe
       authorized_key:
         user: vagrant
         state: present
         key: "{{ lookup('file', '/cpe_ssh_keys/{{host}}/cpeKey.pub') }}"
-
-- name: 將該CPE的ssh key的私鑰路徑加入inventory
-  hosts: localhost
-  become: true
-  tasks:
-    - name:
-      ansible.builtin.lineinfile:
-        path: /etc/ansible/hosts
-        insertafter: "ansible_ssh_host={{ ansible_ip }}"
-        line:  ansible_ssh_private_key_file="{{ ssh_key_path }}"
-
-- name: 設置CPE的初始參數
-  hosts: "{{ host }}"
-  become: true
-  vars:
-    - new_cpe_parameter: ""
-  tasks:
+        
     - name: 安裝所需套件
       pip:
         name: pandas
@@ -54,6 +40,16 @@
         volumes:
           - /var/run/docker.sock:/var/run/docker.sock
           - /home/vagrant/parameter:/parameter
+
+#- name: 將該CPE的ssh key的私鑰路徑加入inventory
+#  hosts: localhost
+#  become: true
+#  tasks:
+#    - name:
+#      ansible.builtin.lineinfile:
+#        path: /etc/ansible/hosts
+#        insertafter: "ansible_ssh_host={{ ansible_ip }}"
+#        line:  ansible_ssh_private_key_file="{{ ssh_key_path }}"
      
 
         

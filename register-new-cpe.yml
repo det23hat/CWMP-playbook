@@ -16,5 +16,5 @@
         insertafter: "{{ cpe_group }}"
         marker: "#addhost {{host}}"
         block: |
-          {{host}} ansible_ssh_host={{ ansible_ip }} ansible_port=22 ansible_user=vagrant
+          {{host}} ansible_ssh_host={{ ansible_ip }} ansible_port=22 ansible_user=vagrant ansible_ssh_private_key_file="{{ ssh_key_path }}"
       when: exit_result.stdout == ""
