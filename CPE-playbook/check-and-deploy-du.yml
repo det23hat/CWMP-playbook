@@ -1,0 +1,53 @@
+- name: 部署新DU
+  hosts: '{{host}}'
+  become: true
+  vars:
+    cpe_du_list: []
+    total_du_list: []
+    du_latest_images: []
+    du_need_deployed: []
+    du_need_deployed_info: []
+  tasks: 
+    - name: 取得DU資訊
+      community.docker.docker_host_info:
+        containers: yes
+      register: du_info
+
+    - name: print result    
+      debug:
+        msg: "{{ du_info }}"
+
+    - name: 取得目前du數量
+      set_fact:
+        total_du_list: "{{total_du_list + [item.container_name]}}"
+      loop: "{{ du_latest_images }}"
+    
+    - name: 取得cpe中運行的du
+      set_fact: 
+        cpe_du_list: "{{ cpe_du_list + [item.Names[0]] }}"
+      loop: "{{ du_info | json_query('containers[*]') }}"
+    
+    - name: 取得cpe未部屬的du
+      set_fact:
+        du_need_deployed: "{{ du_need_deployed + total_du_list | difference(cpe_du_list)}}"
+
+    - name: 所需部署du
+      debug:
+        msg: "{{ host }}需部署{{ item }}"
+      loop: "{{ du_need_deployed }}"
+    
+    - include_tasks: filter-du-info-need-deploy.yml
+      loop: "{{ du_latest_images }}"
+      loop_control:
+        loop_var:  du_info_item 
+  
+    - name: 列印
+      debug:
+        msg: "{{ du_need_deployed_info }}"
+    
+    - include_tasks: deploy-du.yml
+      loop: "{{ du_need_deployed_info }}"
+      loop_control:
+        loop_var: new_du_item
+    
+    

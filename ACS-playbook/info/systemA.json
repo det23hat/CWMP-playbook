@@ -1,0 +1,16 @@
+{
+    "du_latest_images" : [
+        {
+            "container_name":"/DU",
+            "image_ver":"192.168.33.10:5000/du:0.1"
+        },
+        {
+            "container_name":"/mongo",
+            "image_ver":"192.168.33.10:5000/du:0.1"
+        },
+        {
+            "container_name":"/DU",
+            "image_ver":"192.168.33.10:5000/du:0.1"
+        }
+    ]
+}

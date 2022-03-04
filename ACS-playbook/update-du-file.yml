@@ -1,0 +1,17 @@
+---
+- hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: print
+      debug:
+        msg: "{{ filename }}"
+
+    - name: 更新DU資訊檔案
+      ansible.builtin.copy:
+        src: "../tmp/{{ filename }}.json"
+        dest: "../info/{{ filename }}.json"
+
+    - name: 刪除暫時檔案
+      ansible.builtin.file:
+        path: "../tmp/{{ filename }}.json"
+        state: absent

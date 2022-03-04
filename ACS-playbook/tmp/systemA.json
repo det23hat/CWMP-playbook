@@ -1,0 +1,16 @@
+{
+    "du_latest_images": [
+        {
+            "container_name": "/mongo",
+            "image_ver": "mongo:latest",
+            "ports": ["27017:27017"],
+            "volumes": []
+        },
+        {
+            "container_name": "du_2_switch",
+            "image_ver": "192.168.33.10:5000/control-switch-service:2.2",
+            "ports": ["3000:3000"],
+            "volumes": []
+        }
+    ]
+}

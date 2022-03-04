@@ -5,7 +5,10 @@
     old_ver_containers_info: []
     du_latest_images: []
     new_ver_containers_info: []
-    port_list: []     
+    port_list: [] 
+    is_du_update: 0
+    is_system_update: 0
+    system_latest_images: []   
   tasks: 
     - name: 取得DU資訊
       community.docker.docker_host_info:
@@ -20,6 +23,13 @@
       loop: "{{ du_latest_images }}"
       loop_control:
         loop_var: new_ver_image_item
+      when: "{{ is_du_update }}" == 1 
+
+    - include_tasks: filter-image-ver.yml
+      loop: "{{ system_latest_images }}"
+      loop_control:
+        loop_var: new_ver_image_item
+      when: "{{ is_du_update }}" == 1
     
     - include_tasks: container-port-format.yml
       loop: "{{ old_ver_containers_info }}"

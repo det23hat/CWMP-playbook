@@ -1,0 +1,34 @@
+---
+- hosts: localhost
+  gather_facts: false
+  vars:
+    new_container_var: []
+    old_container_info: []
+    new_info_file: {}
+    new_container_info: [{
+      "container_name":"{{container_name}}",
+      "image_ver":"{{image_ver}}"
+    }]
+  tasks:
+    - name: 取得舊DU資訊檔案
+      include_vars:
+        file: '../info/{{ filename }}.json'
+        name: container_var
+
+    - name: 處理舊DU資訊檔案
+      set_fact:
+        old_container_info: "{{container_var.du_latest_images}}"
+      no_log: true
+
+    - name: 將新DU資訊加入舊DU資訊
+      set_fact:
+        old_container_info : "{{ old_container_info + new_container_info }}"
+    
+    - name: 整理新DU資訊格式
+      set_fact:
+        new_info_file: {"du_latest_images":"{{old_container_info}}"}
+  
+    - name: 產生暫時性DU資訊檔案
+      copy: 
+        content: "{{ new_info_file | to_nice_json }}" 
+        dest: '../tmp/{{ filename }}.json'

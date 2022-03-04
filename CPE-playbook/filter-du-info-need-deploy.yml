@@ -1,0 +1,6 @@
+- name: 取得所需部署du之資訊
+  set_fact:
+    du_need_deployed_info: "{{ du_need_deployed_info + [du_info_item] }}"
+  loop: "{{ du_need_deployed }}" 
+  when: 
+    - du_info_item.container_name == item
