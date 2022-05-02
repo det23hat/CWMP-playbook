@@ -19,19 +19,19 @@
       debug:
         msg: "{{ du_info }}"
         
-    - include_tasks: filter-image-ver.yml
+    - include_tasks: /tasks-for-update/filter-image-ver.yml
       loop: "{{ du_latest_images }}"
       loop_control:
         loop_var: new_ver_image_item
-      when: "{{ is_du_update }}" == 1 
+      when: is_du_update == 1 
 
-    - include_tasks: filter-image-ver.yml
+    - include_tasks: /tasks-for-update/filter-image-ver.yml
       loop: "{{ system_latest_images }}"
       loop_control:
         loop_var: new_ver_image_item
-      when: "{{ is_du_update }}" == 1
+      when: is_system_update == 1
     
-    - include_tasks: container-port-format.yml
+    - include_tasks: /tasks-for-update/container-port-format.yml
       loop: "{{ old_ver_containers_info }}"
       loop_control:
         loop_var: old_ver_containers_item    
@@ -41,7 +41,7 @@
         msg: "{{ item }}"
       loop: "{{ new_ver_containers_info }}"
     
-    - include_tasks: update-du-ver.yml
+    - include_tasks: /tasks-for-update/update-du-ver.yml
       loop: "{{ new_ver_containers_info }}"
       loop_control:
         loop_var: new_ver_container_item

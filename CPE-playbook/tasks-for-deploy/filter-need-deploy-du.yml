@@ -1,0 +1,23 @@
+- name: 建立暫時的du list
+  set_fact:
+    tmp_du_list: "{{ tmp_du_list + du_latest_images}}"
+
+- name: 比對有無新DU
+  set_fact:
+    tmp_du_list: "{{ tmp_du_list | difference(cpe_du_item.info)}}"
+
+- name: 加入資料
+  set_fact:
+    deploy_list: "{{ deploy_list + [{'cpe':cpe_du_item.cpe_name,'info':tmp_du_list}] }}"
+
+- name:
+  set_fact:
+    du_need_deployed_info: "{{ du_need_deployed_info + deploy_list }}"
+
+- name: 重置
+  set_fact:
+    tmp_du_list: []
+
+- name: 重置
+  set_fact:
+    deploy_list: []

@@ -1,53 +1,67 @@
-- name: 部署新DU
+- name: 取得資訊
   hosts: '{{host}}'
   become: true
+  gather_facts: no
   vars:
-    cpe_du_list: []
-    total_du_list: []
+    du_info: []
     du_latest_images: []
-    du_need_deployed: []
-    du_need_deployed_info: []
+    du_need_deploy_list: []
+  #no_log: true
   tasks: 
     - name: 取得DU資訊
       community.docker.docker_host_info:
         containers: yes
-      register: du_info
+      register: container_info
 
-    - name: print result    
-      debug:
-        msg: "{{ du_info }}"
+    # - name: setfact
+    #   set_fact:
+    #     du_info: "{{ du_info + container_info.containers }}"
 
-    - name: 取得目前du數量
+    - name: 取得cpe中運行的du部分資訊列
       set_fact:
-        total_du_list: "{{total_du_list + [item.container_name]}}"
-      loop: "{{ du_latest_images }}"
+        du_info: "{{ du_info +[{'container_name':item.Names[0],'image_ver':item.Image}] }}"
+      loop: "{{ container_info.containers }}"
     
-    - name: 取得cpe中運行的du
-      set_fact: 
-        cpe_du_list: "{{ cpe_du_list + [item.Names[0]] }}"
-      loop: "{{ du_info | json_query('containers[*]') }}"
-    
-    - name: 取得cpe未部屬的du
+    - name: 比對有無新DU
       set_fact:
-        du_need_deployed: "{{ du_need_deployed + total_du_list | difference(cpe_du_list)}}"
+        du_need_deploy_list: "{{ du_latest_images | difference(du_info)}}"
+    
+    - include_tasks: /tasks-for-deploy/deploy-du.yml
+      loop: "{{ du_need_deploy_list }}"
+      loop_control:
+        loop_var: new_du_item 
 
-    - name: 所需部署du
-      debug:
-        msg: "{{ host }}需部署{{ item }}"
-      loop: "{{ du_need_deployed }}"
-    
-    - include_tasks: filter-du-info-need-deploy.yml
-      loop: "{{ du_latest_images }}"
-      loop_control:
-        loop_var:  du_info_item 
-  
-    - name: 列印
-      debug:
-        msg: "{{ du_need_deployed_info }}"
-    
-    - include_tasks: deploy-du.yml
-      loop: "{{ du_need_deployed_info }}"
-      loop_control:
-        loop_var: new_du_item
+# - name: 比對與處理DU資訊
+#   hosts: localhost
+#   gather_facts: no
+#   no_log: true
+#   vars:
+#     cpe_need_du_list: []
+#     du_latest_images: []
+#     d_info: []
+#     du_need_deployed_info: []
+#     hostlist: "{{ groups[host] }}"
+#   tasks:
+#     - include_tasks: get_du_info_list.yml
+#       loop: "{{ hostlist }}"
+#       loop_control:
+#         loop_var: host_num
+
+# - name: 部署DU
+#   hosts: '{{host}}'
+#   become: true
+#   no_log: true
+#   gather_facts: no
+#   vars:
+#     du_need_deployed_info: "{{ hostvars['localhost']['cpe_need_du_list'] }}"
+#     deploy_info: []
+#   tasks: 
+#      c_name : "{{ new_du_item.container_name | trim('/') }}"
+
+#     - include_tasks: deploy-du.yml
+#       when: new_du_item.cpe_name == inventory_hostname
+#       loop: "{{ du_need_deployed_info }}"
+#       loop_control:
+#         loop_var: new_du_item    
     
     

@@ -1,0 +1,24 @@
+# - name: 建立用於比對的新du list
+#   set_fact:
+#     tmp_du_list: "{{ tmp_du_list + du_latest_images}}"
+
+- name: 取得cpe中運行的du部分資訊列
+  set_fact:
+    d_info: "{{ d_info +[{'container_name':item.Names[0],'image_ver':item.Image}] }}"
+  loop: "{{ hostvars[host_num]['du_info'] }}"
+
+- name: 比對有無新DU
+  set_fact:
+    du_need_deploy_list: "{{ du_latest_images | difference(d_info)}}"
+
+- name: 設置該CPE所需部署的DU列
+  set_fact: 
+    cpe_need_du_list: "{{ cpe_need_du_list + [{'cpe_name':host_num,'c_info':du_need_deploy_list}] }}"
+
+- name: 重置d_info
+  set_fact:
+    d_info: []
+
+- name: 重置d_info
+  set_fact:
+    du_need_deploy_list: []
