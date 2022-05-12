@@ -25,21 +25,18 @@
           - hostname: '{{host}}'
       register: set_parameter_result
     
-    - name: 設定結果
-      debug: msg="{{ set_parameter_result }}"
-    
-    - name: 運行periodic inform的container
-      community.docker.docker_container:
-        name: inform-2
-        image: '{{ inform_periodic_latest_image }}'
-        detach: yes
-        auto_remove: no
-        interactive: no
-        privileged: no
-        tty: no
-        volumes:
-          - /var/run/docker.sock:/var/run/docker.sock
-          - /home/vagrant/parameter:/parameter
+    # - name: 運行periodic inform的container
+    #   community.docker.docker_container:
+    #     name: inform-2
+    #     image: '{{ inform_periodic_latest_image }}'
+    #     detach: yes
+    #     auto_remove: no
+    #     interactive: no
+    #     privileged: no
+    #     tty: no
+    #     volumes:
+    #       - /var/run/docker.sock:/var/run/docker.sock
+    #       - /home/vagrant/parameter:/parameter
 
 #- name: 將該CPE的ssh key的私鑰路徑加入inventory
 #  hosts: localhost
