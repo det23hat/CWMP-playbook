@@ -1,0 +1,12 @@
+---
+- hosts: localhost
+  gather_facts: false
+  vars:
+    new_container_info: {"new_du_container_info":[{"container_name":"{{container_name}}","image_ver":"{{image_ver}}"}]}
+  tasks:
+    - name: 產生新DU資訊檔案
+      blockinfile:
+        path: '../newDUInfo/{{ filename }}.json'
+        create: yes
+        block: "{{new_container_info | to_nice_json}}"
+        marker: ""

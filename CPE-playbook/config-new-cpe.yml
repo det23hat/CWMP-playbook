@@ -1,16 +1,15 @@
 ---
-- name: 設置ssh key於CPE
+- name: 初始配置CPE
   hosts: "{{ host }}"
   become: true
   vars:
     - new_cpe_parameter: ""
   tasks:
-    - name: 新增ssh key 到cpe
-      authorized_key:
-        user: vagrant
-        state: present
-        key: "{{ lookup('file', '/cpe_ssh_keys/{{host}}/cpeKey.pub') }}"
-        
+    # - name: 新增ssh key 到cpe
+    #   authorized_key:
+    #     user: pi
+    #     state: present
+    #     key: "{{ lookup('file', '/cpe_ssh_keys/{{host}}/cpeKey.pub') }}"
     - name: 安裝所需套件
       pip:
         name: pandas
@@ -19,11 +18,22 @@
       pip:
         name: docker
         
+    # - name: 設定參數
+    #   setParameterValue:
+    #     parameter_key: 
+    #       - hostname: '{{host}}'
+    #   register: set_parameter_result
+          
     - name: 設定參數
-      setParameterValue:
-        parameter_key: 
-          - hostname: '{{host}}'
-      register: set_parameter_result
+      lineinfile: 
+        dest: "/etc/ssh/sshd_config" 
+        regexp: '^(#\s*)?PasswordAuthentication '
+        line: 'PasswordAuthentication no'
+
+    - name: 重啟服務
+      service: 
+        name: sshd
+        state: restarted
     
     # - name: 運行periodic inform的container
     #   community.docker.docker_container:

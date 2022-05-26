@@ -1,17 +1,41 @@
 ---
 - hosts: localhost
   gather_facts: false
+  vars:
+    old_container_info: []
+    new_info_file: {}
+    new_container_info: []
   tasks:
-    - name: print
-      debug:
-        msg: "{{ filename }}"
+    - name: 取得ACS讀取的DU資訊檔案內容
+      include_vars:
+        file: '../allDUinfo/{{ filename }}.json'
+        name: container_var
+    
+    - name: 取得新DU資訊檔案內容
+      include_vars:
+        file: '../newDUInfo/{{ filename }}.json'
+        name: new_container_var
+    - name: 處理DU資訊檔案
+      block:
+      - name: 
+        set_fact:
+          old_container_info: "{{container_var.du_latest_images}}"
+        no_log: true
+      
+      - name: 
+        set_fact:
+          new_container_info: "{{new_container_var.new_du_container_info}}"
 
-    - name: 更新DU資訊檔案
-      ansible.builtin.copy:
-        src: "../tmp/{{ filename }}.json"
-        dest: "../info/{{ filename }}.json"
 
-    - name: 刪除暫時檔案
-      ansible.builtin.file:
-        path: "../tmp/{{ filename }}.json"
-        state: absent
+      - name: 將新DU資訊加入舊DU資訊
+        set_fact:
+          old_container_info : "{{ old_container_info + new_container_info }}"
+      
+      - name: 整理新DU資訊格式
+        set_fact:
+          new_info_file: {"du_latest_images":"{{old_container_info}}"}
+
+      - name: 產生暫時性DU資訊檔案
+        copy: 
+          content: "{{ new_info_file | to_nice_json }}" 
+          dest: '../allDUinfo/{{ filename }}.json'

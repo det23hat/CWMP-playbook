@@ -15,7 +15,7 @@ def main():
         argument_spec=module_args
     )
 
-    csv_filename = "/home/vagrant/parameter/parameter.csv"
+    csv_filename = "/home/pi/Downloads/parameter/parameter.csv"
 
     df = pd.read_csv(csv_filename)
     

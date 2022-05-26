@@ -1,7 +1,7 @@
 ---
 - name: 將CPE連線資訊加入inventory
   hosts: localhost
-  become: true
+  # become: true
   vars:
     - cpe_group: "[cpe]"
   tasks:
@@ -16,5 +16,35 @@
         insertafter: "{{ cpe_group }}"
         marker: "#addhost {{host}}"
         block: |
-          {{host}} ansible_ssh_host={{ ansible_ip }} ansible_port=22 ansible_user=vagrant ansible_ssh_private_key_file="{{ ssh_key_path }}"
+          {{host}} ansible_ssh_host={{ ansible_ip }} ansible_port=22 ansible_user=pi ansible_ssh_private_key_file={{ ssh_key_path }}
       when: exit_result.stdout == ""
+    
+    - name:
+      add_host:
+        name: "{{ ansible_ip }}"
+        ansible_port: 22
+        ansible_password: "{{ ansible_password }}"
+        ansible_user: "pi"
+
+- name: 設置ssh key於CPE
+  hosts: "{{ ansible_ip }}"
+  become: true
+  vars:
+    - ansible_password: '{{ ansible_password }}'
+  tasks:
+    - name: 新增ssh key 到cpe
+      authorized_key:
+        user: pi
+        state: present
+        key: "{{ lookup('file', '/cpe_ssh_keys/{{host}}/cpeKey.pub') }}"
+      when: hostvars['localhost']['exit_result'].stdout == ""
+
+# - name: 將ssh key 路徑加入inventory
+#   hosts: localhost
+#   become: true
+#   tasks:
+#     - name: 加入CPE至inventory中
+#       lineinfile:
+#         path: /etc/ansible/hosts
+#         search_string: '{{host}}'
+#         line: "{{host}} ansible_ssh_host={{ ansible_ip }} ansible_port=22 ansible_user=pi ansible_ssh_private_key_file={{ ssh_key_path }} "

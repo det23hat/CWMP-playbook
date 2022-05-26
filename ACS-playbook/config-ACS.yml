@@ -41,7 +41,7 @@
         ports: "{{ port_list }}"
         volumes:
           - "{{ ansible_playbook_path }}:/ansible_playbook"
-          - "{{ du_info_path }}:/info"
-          - "{{ tmp_du_info_path }}:/tmp"
+          - "{{ du_info_path }}:/allDUinfo"
+          - "{{ tmp_du_info_path }}:/newDUInfo"
           - "{{ cpe_ssh_keys_path }}:/cpe_ssh_keys"
           - "{{ ansible_host_path }}:/etc/ansible"

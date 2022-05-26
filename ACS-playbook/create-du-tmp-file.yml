@@ -7,7 +7,9 @@
     new_info_file: {}
     new_container_info: [{
       "container_name":"{{container_name}}",
-      "image_ver":"{{image_ver}}"
+      "image_ver":"{{image_ver}}",
+      "ports":"{{used_ports}}",
+      "volume":"{{used_volumes}}"
     }]
   tasks:
     - name: 取得舊DU資訊檔案
