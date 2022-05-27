@@ -12,15 +12,15 @@
   #     tty: no
   #   loop: "{{ new_du_item.c_info }}"
 
-  - name: 部署之DU資訊
-    community.docker.docker_container:
-      name: "{{ inventory_hostname }}"
-      image: '{{ new_du_item.image_ver }}'
-      auto_remove: yes
-      detach: yes
-      interactive: no
-      privileged: no
-      tty: no
+  # - name: 部署之DU資訊
+  #   community.docker.docker_container:
+  #     name: "{{ inventory_hostname }}"
+  #     image: '{{ new_du_item.image_ver }}'
+  #     auto_remove: yes
+  #     detach: yes
+  #     interactive: no
+  #     privileged: no
+  #     tty: no
 
   # - name: 項目處理
   #   block:
@@ -37,58 +37,58 @@
   #   when: new_du_item.cpe == inventory_hostname
   
   
-  # - name: 運行新版本 container
-  #   community.docker.docker_container:
-  #     name: "{{ c_name }}"
-  #     image: '{{ new_du_item.image_ver }}'
-  #     auto_remove: yes
-  #     detach: yes
-  #     interactive: no
-  #     privileged: no
-  #     tty: no
-  #     ports: '{{ new_du_item.ports }}'
-  #     volumes: '{{ new_du_item.volumes }}'
-    # when: 
-    #   - new_du_item.ports != []
-    #   - new_du_item.volumes != []
+  - name: 運行新版本 container
+    community.docker.docker_container:
+      name: "{{ new_du_item.container_name | trim('/') }}"
+      image: '{{ new_du_item.image_ver }}'
+      auto_remove: yes
+      detach: yes
+      interactive: no
+      privileged: no
+      tty: no
+      ports: '{{ new_du_item.ports }}'
+      volumes: '{{ new_du_item.volumes }}'
+    when: 
+      - new_du_item.ports != []
+      - new_du_item.volumes != []
 
-  # - name: 運行新版本 container
-  #   community.docker.docker_container:
-  #     name: "{{ c_name }}"
-  #     image: '{{ new_du_item.image_ver }}'
-  #     auto_remove: yes
-  #     detach: yes
-  #     interactive: no
-  #     privileged: no
-  #     tty: no
-  #     ports: '{{ new_du_item.ports }}'
-  #   when: 
-  #     - new_du_item.ports != []
-  #     - new_du_item.volumes == []
+  - name: 運行新版本 container
+    community.docker.docker_container:
+      name: "{{ new_du_item.container_name | trim('/') }}"
+      image: '{{ new_du_item.image_ver }}'
+      auto_remove: yes
+      detach: yes
+      interactive: no
+      privileged: no
+      tty: no
+      ports: '{{ new_du_item.ports }}'
+    when: 
+      - new_du_item.ports != []
+      - new_du_item.volumes == []
 
-  # - name: 運行新版本 container
-  #   community.docker.docker_container:
-  #     name: "{{ c_name }}"
-  #     image: '{{ new_du_item.image_ver }}'
-  #     auto_remove: yes
-  #     detach: yes
-  #     interactive: no
-  #     privileged: no
-  #     tty: no
-  #     volumes: '{{ new_du_item.volumes }}'
-  #   when: 
-  #     - new_du_item.ports == []
-  #     - new_du_item.volumes != []
+  - name: 運行新版本 container
+    community.docker.docker_container:
+      name: "{{ new_du_item.container_name | trim('/') }}"
+      image: '{{ new_du_item.image_ver }}'
+      auto_remove: yes
+      detach: yes
+      interactive: no
+      privileged: no
+      tty: no
+      volumes: '{{ new_du_item.volumes }}'
+    when: 
+      - new_du_item.ports == []
+      - new_du_item.volumes != []
 
-  # - name: 運行新版本 container
-  #   community.docker.docker_container:
-  #     name: "{{ c_name }}"
-  #     image: '{{ new_du_item.image_ver }}'
-  #     auto_remove: yes
-  #     detach: yes
-  #     interactive: no
-  #     privileged: no
-  #     tty: no
-  #   when: 
-  #     - new_du_item.ports == []
-  #     - new_du_item.volumes == []
+  - name: 運行新版本 container
+    community.docker.docker_container:
+      name: "{{ new_du_item.container_name | trim('/') }}"
+      image: '{{ new_du_item.image_ver }}'
+      auto_remove: yes
+      detach: yes
+      interactive: no
+      privileged: no
+      tty: no
+    when: 
+      - new_du_item.ports == []
+      - new_du_item.volumes == []

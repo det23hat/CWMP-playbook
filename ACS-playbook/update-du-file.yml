@@ -35,7 +35,12 @@
         set_fact:
           new_info_file: {"du_latest_images":"{{old_container_info}}"}
 
-      - name: 產生暫時性DU資訊檔案
+      - name: 更新DU資訊檔案
         copy: 
           content: "{{ new_info_file | to_nice_json }}" 
           dest: '../allDUinfo/{{ filename }}.json'
+    
+      - name: 移除新DU資訊檔
+        ansible.builtin.file:
+          path: '../newDUInfo/{{ filename }}.json'
+          state: absent
